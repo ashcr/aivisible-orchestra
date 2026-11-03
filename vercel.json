@@ -1,0 +1,124 @@
+{
+  "rewrites": [
+    {
+      "source": "/concepts",
+      "destination": "/concepts.html"
+    },
+    {
+      "source": "/simulator",
+      "destination": "/simulator.html"
+    },
+    {
+      "source": "/agents",
+      "destination": "/agents.html"
+    },
+    {
+      "source": "/future",
+      "destination": "/future.html"
+    },
+    {
+      "source": "/authors",
+      "destination": "/authors.html"
+    },
+    {
+      "source": "/preorder",
+      "destination": "/preorder.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/architecture",
+      "destination": "/architecture.html"
+    },
+    {
+      "source": "/dictionary",
+      "destination": "/dictionary.html"
+    },
+    {
+      "source": "/reader",
+      "destination": "/reader.html"
+    },
+    {
+      "source": "/decoder",
+      "destination": "/decoder.html"
+    },
+    {
+      "source": "/ganesha",
+      "destination": "/ganesha.html"
+    },
+    {
+      "source": "/five-notes",
+      "destination": "/five-notes.html"
+    },
+    {
+      "source": "/lab",
+      "destination": "/simulator.html"
+    },
+    {
+      "source": "/play",
+      "destination": "/simulator.html"
+    },
+    {
+      "source": "/feedback",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/glossary",
+      "destination": "/dictionary.html"
+    },
+    {
+      "source": "/concepts/",
+      "destination": "/concepts.html"
+    },
+    {
+      "source": "/reader/",
+      "destination": "/reader.html"
+    },
+    {
+      "source": "/decoder/",
+      "destination": "/decoder.html"
+    },
+    {
+      "source": "/dictionary/",
+      "destination": "/dictionary.html"
+    },
+    {
+      "source": "/agents/",
+      "destination": "/agents.html"
+    },
+    {
+      "source": "/architecture/",
+      "destination": "/architecture.html"
+    },
+    {
+      "source": "/simulator/",
+      "destination": "/simulator.html"
+    },
+    {
+      "source": "/ganesha/",
+      "destination": "/ganesha.html"
+    },
+    {
+      "source": "/five-notes/",
+      "destination": "/five-notes.html"
+    },
+    {
+      "source": "/authors/",
+      "destination": "/authors.html"
+    },
+    {
+      "source": "/future/",
+      "destination": "/future.html"
+    },
+    {
+      "source": "/preorder/",
+      "destination": "/preorder.html"
+    },
+    {
+      "source": "/contact/",
+      "destination": "/contact.html"
+    }
+  ]
+}

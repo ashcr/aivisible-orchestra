@@ -1,0 +1,23 @@
+DirectoryIndex index.html
+Options -MultiViews
+RewriteEngine On
+RewriteRule ^api/submit/?$ - [R=404,L]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+RewriteRule ^concepts/?$ concepts.html [L,NC]
+RewriteRule ^simulator/?$ simulator.html [L,NC]
+RewriteRule ^agents/?$ agents.html [L,NC]
+RewriteRule ^future/?$ future.html [L,NC]
+RewriteRule ^authors/?$ authors.html [L,NC]
+RewriteRule ^preorder/?$ preorder.html [L,NC]
+RewriteRule ^contact/?$ contact.html [L,NC]
+RewriteRule ^architecture/?$ architecture.html [L,NC]
+RewriteRule ^dictionary/?$ dictionary.html [L,NC]
+RewriteRule ^reader/?$ reader.html [L,NC]
+RewriteRule ^decoder/?$ decoder.html [L,NC]
+RewriteRule ^ganesha/?$ ganesha.html [L,NC]
+RewriteRule ^five-notes/?$ five-notes.html [L,NC]
+RewriteRule ^lab/?$ simulator.html [L,NC]
+RewriteRule ^play/?$ simulator.html [L,NC]
+RewriteRule ^feedback/?$ contact.html [L,NC]
+RewriteRule ^glossary/?$ dictionary.html [L,NC]
