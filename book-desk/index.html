@@ -56,7 +56,7 @@
     <section class="panel"><h2>Other form submissions</h2><div id="leads"></div></section>
   </main>
   <script>
-  const API = <?php echo json_encode($api); ?>;
+  const API = 'https://cnrpv-49-205-224-145.free.pinggy.net/wp-json/aivisible/v1/desk?token=aio-live-desk';
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   async function load() {
     const err = document.getElementById('err');
