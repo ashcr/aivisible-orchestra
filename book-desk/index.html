@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Book Manager preview · AIvisible Orchestra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#00509E;--ink:#0a1c3b;--muted:#64748b;--line:#dbe3ee;--bg:#f4f7fb;--card:#fff}
+    *{box-sizing:border-box}body{margin:0;font-family:"DM Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+    .top{background:linear-gradient(135deg,#003d7a,#00509E 55%,#1a6bb5);color:#fff;padding:22px 20px 28px}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+    .top h1{font-family:Manrope,sans-serif;margin:0 0 6px;font-size:clamp(1.4rem,3vw,1.9rem)}
+    .top p{margin:0;opacity:.9;font-size:.95rem}
+    .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:.85rem}
+    .pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:-18px 0 22px;position:relative;z-index:1}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 8px 24px rgba(10,28,59,.06)}
+    .card span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+    .card strong{font-size:1.6rem;font-family:Manrope,sans-serif}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+    .panel h2{margin:0 0 12px;font-family:Manrope,sans-serif;font-size:1.1rem}
+    .pipe{display:flex;flex-wrap:wrap;gap:8px}
+    .pipe span{border:2px solid #ccc;border-radius:10px;padding:8px 12px;min-width:96px;background:#fff}
+    .pipe small{display:block;color:var(--muted);font-size:11px}.pipe b{font-size:1.15rem}
+    table{width:100%;border-collapse:collapse;font-size:.92rem}
+    th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+    code{background:#eef2f7;padding:2px 6px;border-radius:4px;font-size:.85rem}
+    .badge{display:inline-block;color:#fff;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600}
+    .err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:14px;border-radius:12px;margin:16px 0}
+    .empty{color:var(--muted);padding:8px 0}
+    a.site{color:#fff;text-decoration:underline}
+    .hint{color:var(--muted);font-size:.88rem;margin:0 0 18px}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>Book Manager preview</h1>
+      <p>Live orders &amp; form submissions — no login required for this share. <a class="site" href="https://ashcr.github.io/aivisible-orchestra/">Open the website</a></p>
+      <div class="meta">
+        <span class="pill" id="status">Loading…</span>
+        <span class="pill" id="clock"></span>
+      </div>
+    </div>
+  </header>
+  <main class="wrap" style="padding-top:8px;padding-bottom:40px">
+    <p class="hint">Submit a pre-order or contact form on the site, then watch it appear here (refreshes every 12 seconds).</p>
+    <div id="err" class="err" hidden></div>
+    <div class="cards" id="cards"></div>
+    <section class="panel"><h2>Pipeline</h2><div class="pipe" id="pipe"></div></section>
+    <section class="panel"><h2>Book orders</h2><div id="orders"></div></section>
+    <section class="panel"><h2>Other form submissions</h2><div id="leads"></div></section>
+  </main>
+  <script>
+  const API = <?php echo json_encode($api); ?>;
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  async function load() {
+    const err = document.getElementById('err');
+    try {
+      const r = await fetch(API, { cache: 'no-store' });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'Could not load desk');
+      err.hidden = true;
+      document.getElementById('status').textContent = j.unread > 0 ? (j.unread + ' new request(s)') : 'Live';
+      document.getElementById('clock').textContent = 'Updated ' + new Date().toLocaleTimeString();
+      const inv = j.inventory || {};
+      const c = j.counts || {};
+      document.getElementById('cards').innerHTML = [
+        ['New requests', c.new || 0],
+        ['Awaiting payment', c.payment_requested || 0],
+        ['Paid / printing', (c.paid || 0) + (c.printing || 0)],
+        ['In transit', c.shipped || 0],
+        ['Stock available', inv.available ?? '—'],
+        ['Printed', inv.printed ?? '—'],
+      ].map(([l,v]) => `<div class="card"><span>${esc(l)}</span><strong>${esc(v)}</strong></div>`).join('');
+      document.getElementById('pipe').innerHTML = (j.pipeline || []).map(p =>
+        `<span style="border-color:${esc(p.color)}"><small>${esc(p.label)}</small><b>${esc(p.count)}</b></span>`
+      ).join('') || '<p class="empty">No pipeline data</p>';
+      const sym = j.currency_symbol || '$';
+      const orders = j.orders || [];
+      document.getElementById('orders').innerHTML = orders.length ? `<table><thead><tr><th>Ref</th><th>Buyer</th><th>Qty</th><th>Amount</th><th>Status</th><th>When</th></tr></thead><tbody>${
+        orders.map(o => `<tr>
+          <td><code>${esc(o.reference)}</code></td>
+          <td>${esc(o.name)}<br><small>${esc(o.email)}</small></td>
+          <td>${esc(o.quantity)}</td>
+          <td>${esc(sym)}${esc(o.amount)}</td>
+          <td><span class="badge" style="background:${esc(o.status_color)}">${esc(o.status_label)}</span></td>
+          <td>${esc(o.created)}</td>
+        </tr>`).join('')
+      }</tbody></table>` : '<p class="empty">No book orders yet — try the Pre-order form on the site.</p>';
+      const leads = j.leads || [];
+      document.getElementById('leads').innerHTML = leads.length ? `<table><thead><tr><th>Ref</th><th>Person</th><th>Type</th><th>Message</th><th>When</th></tr></thead><tbody>${
+        leads.map(l => `<tr>
+          <td><code>${esc(l.reference)}</code></td>
+          <td>${esc(l.name)}<br><small>${esc(l.email)}</small></td>
+          <td>${esc(l.type)}</td>
+          <td>${esc(l.message)}</td>
+          <td>${esc(l.created)}</td>
+        </tr>`).join('')
+      }</tbody></table>` : '<p class="empty">No other form submissions yet — try Contact &amp; Feedback.</p>';
+    } catch (e) {
+      err.hidden = false;
+      err.textContent = e.message || 'Failed to load. Keep the Mac / tunnel online for this preview.';
+      document.getElementById('status').textContent = 'Offline';
+    }
+  }
+  load();
+  setInterval(load, 12000);
+  </script>
+</body>
+</html>
